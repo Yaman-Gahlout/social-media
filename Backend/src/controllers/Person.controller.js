@@ -6,7 +6,7 @@ import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { generateToken } from "../utils/generateToken.js";
 //import { dobToAgeFinder } from "../utils/dobToAge.js";
 
-const registerUser = async (req, res) => {
+const registerPerson = async (req, res) => {
   const {
     person_id,
     person_username,
@@ -55,7 +55,7 @@ const registerUser = async (req, res) => {
     throw new ApiError(500, "Error while registering on DB");
   }
 };
-const loginUser = async (req, res) => {
+const loginPerson = async (req, res) => {
   const { person_username, person_password } = req.body;
   if (!person_username || !person_password) {
     throw new ApiError(400, "All fields are required");
