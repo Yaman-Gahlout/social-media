@@ -8,7 +8,7 @@ dotenv.config({
 
 
 
-db.connect(err => {
+db.connect((err) => {
   if (err) {
     console.error("Database connection failed: " + err.stack);
     return;

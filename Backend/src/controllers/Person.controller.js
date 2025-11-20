@@ -3,7 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { db } from "../db/index.js";
 import { hashPassword,comparePassword } from "../utils/hashPassword.js";
-import { generateToken } from "../utils/generateToken.js";
+import { createToken } from "../utils/jwtCreator.js";
 //import { dobToAgeFinder } from "../utils/dobToAge.js";
 
 const registerPerson = async (req, res) => {
@@ -47,7 +47,7 @@ const loginPerson = async (req, res) => {
     if (!isPasswordValid) {
       throw new ApiError(401, "Invalid password");
     }
-    const token = generateToken(user[0].person_id, user[0].person_username);
+    const token = createToken(user[0].person_id, user[0].person_username);
     const options = {
     httpOnly: true,
     secure: true,
