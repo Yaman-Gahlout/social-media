@@ -14,6 +14,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
+import { personRouter } from "./routes/person.routes.js";
+app.use("/person",personRouter);
+
 app.get('/',(req,res)=>{
     res.send('API is running....');
 })
