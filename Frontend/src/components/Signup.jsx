@@ -25,14 +25,17 @@ function Signup() {
       "http://localhost:9000/person/register-person",
       data
     );
-    navigate("/home");
+
     console.log(response);
   }
   return (
     <div>
       <div className="flex mt-20 mb-10 flex-col gap-5 w-[700px] shadow-2xl shadow-gray-900 border border-gray-200 rounded-2xl p-5 items-center">
         <h1 className="text-5xl  text-gray-200">Signup</h1>
-        <form className="flex flex-col w-[80%] gap-5 mt-8 items-center">
+        <form
+          className="flex flex-col w-[80%] gap-5 mt-8 items-center"
+          onSubmit={submitHandler}
+        >
           <input
             type="text"
             placeholder="Enter username"
@@ -93,10 +96,7 @@ function Signup() {
             className="border border-gray-200 rounded-md w-full p-[10px_20px] bg-gray-200 text-black placeholder:text-black outline-none"
           />
 
-          <button
-            onClick={submitHandler}
-            className="mt-5 p-[10px_20px] cursor-pointer w-full text-gray-200 rounded-lg bg-blue-600"
-          >
+          <button className="mt-5 p-[10px_20px] cursor-pointer w-full text-gray-200 rounded-lg bg-blue-600">
             Create account
           </button>
           <p className="text-lg text-gray-200 opacity-80">
