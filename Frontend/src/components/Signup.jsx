@@ -26,7 +26,8 @@ function Signup() {
 
     const response = await axios.post(
       "http://localhost:9000/person/register-person",
-      data
+      data,
+    
     );
 
     navigate("/home");
