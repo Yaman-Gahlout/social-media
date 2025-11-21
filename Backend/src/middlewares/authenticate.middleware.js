@@ -9,11 +9,12 @@ const verifyPerson=asyncHandler(async (req, res, next) => {
         throw new ApiError(401, "Token not found");
     }
     const decordedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-    const person=decordedToken.person_id;
+    const person=decordedToken.person_username;
     if(!person){
         throw new ApiError(401,"Unauthorized access");
     }
-    req.person=person;
+    req.person_username=person;
+    console.log("Authenticated Person: ",person);
     next();
 });
 

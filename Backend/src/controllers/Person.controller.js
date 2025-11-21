@@ -6,7 +6,7 @@ import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/jwtCreator.js";
 //import { dobToAgeFinder } from "../utils/dobToAge.js";
 
-const registerPerson = async (req, res) => {
+const registerPerson = asyncHandler(async (req, res) => {
   const {
     person_username,
     person_fname,
@@ -63,8 +63,8 @@ const registerPerson = async (req, res) => {
   } catch (error) {
     throw new ApiError(500, "Error while registering on DB");
   }
-};
-const loginPerson = async (req, res) => {
+});
+const loginPerson = asyncHandler(async (req, res) => {
   const { person_username, person_password } = req.body;
   if (!person_username || !person_password) {
     throw new ApiError(400, "All fields are required");
@@ -93,5 +93,32 @@ const loginPerson = async (req, res) => {
     .status(200)
     .cookie("personToken", token, options)
     .json(new ApiResponse(true, "Login successful", null));
-};
-export { registerPerson, loginPerson };
+});
+const uploadPost=asyncHandler(async (req, res) => {
+  const {post_title ,post_sub_title ,post_content}=req.body;
+  if(!post_title || !post_sub_title || !post_content){
+    throw new ApiError(400,"All fields are required");
+  }
+  console.log("Post Data: ",post_title ,post_sub_title ,post_content);
+  const person=req.person_username;
+  const existPost=await db.execute(`SELECT * FROM Post 
+    WHERE post_title=? and person_username=?`,
+    [post_title, person]);
+  if(existPost[0].length>0){
+    throw new ApiError(409,"Post with same title already exists");
+  }
+  const [lastPost] = await db.execute(`SELECT post_id FROM Post ORDER BY post_id DESC LIMIT 1`);
+  const newPostId = lastPost[0] ? lastPost[0].post_id + 1 : 1;
+  if(!newPostId){
+    throw new ApiError(500,"Error while generating post ID");
+  }
+  console.log("New Post ID: ",newPostId);
+  console.log("Authenticated Person for Post: ",person);
+  try {
+    const [p]=await db.execute(`INSERT INTO Post(post_id, post_title, post_sub_title, post_content, person_username) VALUES (?,?,?,?,?)`,[newPostId, post_title, post_sub_title, post_content, person]);
+    res.status(201).json(new ApiResponse(true,"Post uploaded successfully",null));
+  } catch (error) {
+    throw new ApiError(500,"Error while uploading post to DB");
+  } 
+});
+export { registerPerson, loginPerson, uploadPost };
