@@ -29,7 +29,7 @@ function Signup() {
     console.log(response);
   }
   return (
-    <div>
+    <div className="h-screen w-screen flex justify-center items-center bg-gray-950">
       <div className="flex mt-20 mb-10 flex-col gap-5 w-[700px] shadow-2xl shadow-gray-900 border border-gray-200 rounded-2xl p-5 items-center">
         <h1 className="text-5xl  text-gray-200">Signup</h1>
         <form className="flex flex-col w-[80%] gap-5 mt-8 items-center">
@@ -101,11 +101,7 @@ function Signup() {
           </button>
           <p className="text-lg text-gray-200 opacity-80">
             Already have an account?{" "}
-            <a
-              href="/"
-              onClick={() => setCurrentTab("Login")}
-              className="text-blue-700"
-            >
+            <a href="/login" className="text-blue-700">
               Login
             </a>
           </p>

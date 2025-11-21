@@ -1,8 +1,8 @@
 import React from "react";
 
-function Login({ setCurrentTab }) {
+function Login() {
   return (
-    <div>
+    <div className="h-screen w-screen flex justify-center items-center bg-gray-950">
       <div className="flex mt-[100px] flex-col gap-5 h-[400px] w-[550px] shadow-2xl shadow-gray-900 border border-gray-200 rounded-2xl p-5 items-center">
         <h1 className="text-5xl  text-gray-200">Login</h1>
         <form className="flex flex-col gap-5 w-[80%] mt-8 items-center">
@@ -24,10 +24,7 @@ function Login({ setCurrentTab }) {
           </button>
           <p className="text-lg text-gray-200 opacity-80">
             New to openPost?{" "}
-            <a
-              onClick={() => setCurrentTab("Signup")}
-              className="text-blue-700 cursor-pointer"
-            >
+            <a href="/signup" className="text-blue-700 cursor-pointer">
               Register
             </a>
           </p>
