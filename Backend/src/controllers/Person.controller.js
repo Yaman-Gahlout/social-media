@@ -11,6 +11,7 @@ const registerPerson = async (req, res) => {
     person_username,
     person_fname,
     person_lname,
+    person_email,
     person_dob,
     person_gender,
     person_password,
@@ -19,6 +20,7 @@ const registerPerson = async (req, res) => {
     !person_username ||
     !person_fname ||
     !person_lname ||
+    !person_email ||
     !person_dob ||
     !person_gender ||
     !person_password
@@ -29,6 +31,7 @@ const registerPerson = async (req, res) => {
     person_username,
     person_fname,
     person_lname,
+    person_email,
     person_dob,
     person_gender,
     person_password
@@ -43,11 +46,12 @@ const registerPerson = async (req, res) => {
   const hashedPassword = await hashPassword(person_password);
   try {
     const [p] = await db.execute(
-      `INSERT INTO Person(person_username, person_fname, person_lname, person_dob, person_gender, person_password) VALUES (?,?,?,?,?,?)`,
+      `INSERT INTO Person(person_username, person_fname, person_lname, person_email, person_dob, person_gender, person_password) VALUES (?,?,?,?,?,?,?)`,
       [
         person_username,
         person_fname,
         person_lname,
+        person_email,
         person_dob,
         person_gender,
         hashedPassword,
