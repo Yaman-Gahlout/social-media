@@ -11,25 +11,29 @@ function Signup() {
   const [dob, setDob] = useState("");
 
   const navigate = useNavigate();
-  async function submitHandler() {
+  async function submitHandler(e) {
+    e.preventDefault();
     const data = {
       person_username: username,
       person_fname: firstName,
       person_lname: lastName,
+      person_email: email,
       person_dob: dob,
       person_gender: gender,
       person_password: password,
     };
+    console.log(data);
 
     const response = await axios.post(
       "http://localhost:9000/person/register-person",
       data
     );
 
+    navigate("/home");
     console.log(response);
   }
   return (
-    <div>
+    <div className="h-screen w-screen flex justify-center items-center bg-gray-950">
       <div className="flex mt-20 mb-10 flex-col gap-5 w-[700px] shadow-2xl shadow-gray-900 border border-gray-200 rounded-2xl p-5 items-center">
         <h1 className="text-5xl  text-gray-200">Signup</h1>
         <form
@@ -101,11 +105,7 @@ function Signup() {
           </button>
           <p className="text-lg text-gray-200 opacity-80">
             Already have an account?{" "}
-            <a
-              href="/"
-              onClick={() => setCurrentTab("Login")}
-              className="text-blue-700"
-            >
+            <a href="/login" className="text-blue-700">
               Login
             </a>
           </p>
