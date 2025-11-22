@@ -17,6 +17,8 @@ app.use(cookieParser());
 
 import { personRouter } from "./routes/person.routes.js";
 app.use("/person",personRouter);
+import { postRouter } from "./routes/post.routes.js";
+app.use("/post",postRouter);
 
 app.get('/',(req,res)=>{
     res.send('API is running....');

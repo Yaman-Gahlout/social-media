@@ -37,8 +37,8 @@ const registerPerson = asyncHandler(async (req, res) => {
     person_password
   );
   let [existedUser] = await db.execute(
-    `SELECT * FROM Person WHERE person_username = ?`,
-    [person_username]
+    `SELECT * FROM Person WHERE person_username = ? or person_email = ?`,
+    [person_username, person_email]
   );
   if (existedUser.length > 0) {
     throw new ApiError(409, "User allready exists");
@@ -97,27 +97,24 @@ const loginPerson = asyncHandler(async (req, res) => {
     .json(new ApiResponse(true, "Login successful", null));
 });
 const uploadPost=asyncHandler(async (req, res) => {
-  const {post_title ,post_sub_title ,post_content}=req.body;
-  if(!post_title || !post_sub_title || !post_content){
+  const {post_content}=req.body;
+  if(!post_content){
     throw new ApiError(400,"All fields are required");
   }
-  console.log("Post Data: ",post_title ,post_sub_title ,post_content);
+  console.log("Post Data: ",post_content);
   const person=req.person_username;
-  const existPost=await db.execute(`SELECT * FROM Post 
-    WHERE post_title=? and person_username=?`,
-    [post_title, person]);
-  if(existPost[0].length>0){
-    throw new ApiError(409,"Post with same title already exists");
-  }
   const [lastPost] = await db.execute(`SELECT post_id FROM Post ORDER BY post_id DESC LIMIT 1`);
-  const newPostId = lastPost[0] ? lastPost[0].post_id + 1 : 1;
+  const newPostId = lastPost[0] ? lastPost[0].post_id + 1 : 1000;
   if(!newPostId){
     throw new ApiError(500,"Error while generating post ID");
   }
   console.log("New Post ID: ",newPostId);
   console.log("Authenticated Person for Post: ",person);
+  const date = new Date();
+  const formatted = date.toISOString().split('T')[0];
+  console.log(formatted);
   try {
-    const [p]=await db.execute(`INSERT INTO Post(post_id, post_title, post_sub_title, post_content, person_username) VALUES (?,?,?,?,?)`,[newPostId, post_title, post_sub_title, post_content, person]);
+    const [p]=await db.execute(`INSERT INTO Post(post_id, post_content, person_username,createdAt) VALUES (?,?,?,?)`,[newPostId, post_content, person, formatted]);
     res.status(201).json(new ApiResponse(true,"Post uploaded successfully",null));
   } catch (error) {
     throw new ApiError(500,"Error while uploading post to DB");

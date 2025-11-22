@@ -6,5 +6,5 @@ const personRouter = Router();
 personRouter.route("/register-person").post(registerPerson);
 personRouter.route("/login-person").post(loginPerson);
 //Protected Routes
-personRouter.route("/upload-post").post(verifyPerson, uploadPost);
+
 export { personRouter };
