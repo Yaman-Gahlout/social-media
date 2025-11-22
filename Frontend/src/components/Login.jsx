@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 function Login() {
   const [username, setUsername] = React.useState("");
@@ -17,9 +18,10 @@ function Login() {
     const response = await axios.post(
       "http://localhost:9000/person/login-person",
       data,
+      {withCredentials: true}
      
     );
-
+    toast.success("Logged in successfully");
     console.log(response);
     navigate("/home");
   }
