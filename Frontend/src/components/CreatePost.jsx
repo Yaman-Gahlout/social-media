@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {toast} from "react-hot-toast";
 function CreatePost() {
   const [postContent, setPostContent] = useState("");
-  sumbitHandler = async (e) => {
+  const navigate = useNavigate();
+ const submitHandler = async (e) => {
     e.preventDefault();
     const data = {
       post_content: postContent,
@@ -15,6 +18,9 @@ function CreatePost() {
       { withCredentials: true }
     );
     console.log(response);
+    toast.success("Post created successfully");
+    navigate("/home");
+    
   };
   return (
     <div className="h-screen w-screen flex justify-center bg-gray-950">
@@ -25,7 +31,7 @@ function CreatePost() {
         <form
           action=""
           className="flex flex-col w-[80%] gap-5 mt-8 items-center"
-          onClick={sumbitHandler}
+          onSubmit={submitHandler}
         >
           <textarea
             name=""

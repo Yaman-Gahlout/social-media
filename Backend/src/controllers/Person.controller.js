@@ -96,6 +96,31 @@ const loginPerson = asyncHandler(async (req, res) => {
     .cookie("personToken", token, options)
     .json(new ApiResponse(true, "Login successful", null));
 });
+const logoutPerson = asyncHandler(async (req, res) => {
+  const options = {
+    httpOnly: true,
+    secure: false,
+    sameSite: "Lax",
+  };
+  return res
+    .status(200)
+    .clearCookie("personToken", options)
+    .json(new ApiResponse(true, "Logout successful", null));
+})
+const getPersonDetails=asyncHandler(async (req,res)=>{  
+  const person_username=req.person_username;
+  console.log("Authenticated Person: ",person_username);
+  try {
+    const person=await db.execute(`SELECT person_username, person_fname, person_lname, person_email, person_dob, person_gender FROM Person WHERE person_username = ?`,[person_username]);
+    if(!person){
+      throw new ApiError(404,"Person not found");
+    }
+    res.status(200)
+    .json(new ApiResponse(true,"Person details fetched successfully",person[0]));
+  } catch (error) {
+    throw new ApiError(500,"Error while fetching person details from DB");
+  }
+});
 const uploadPost=asyncHandler(async (req, res) => {
   const {post_content}=req.body;
   if(!post_content){
@@ -120,4 +145,67 @@ const uploadPost=asyncHandler(async (req, res) => {
     throw new ApiError(500,"Error while uploading post to DB");
   } 
 });
-export { registerPerson, loginPerson, uploadPost };
+const getAllPosts=asyncHandler(async (req,res)=>{
+  const person_username=req.person_username;
+  console.log("Authenticated Person for Fetching Posts: ",person_username);
+  try {
+  const person=await db.execute(`SELECT * FROM Person WHERE person_username = ?`,[person_username]);
+  if(!person){
+    throw new ApiError(404,"Person not found");
+  }
+    const posts=await db.execute(`
+    SELECT 
+    po.post_id,po.post_content,po.createdAt,p.person_username,p.person_fname,p.person_lname,COUNT(l.post_id) AS like_count
+    FROM Post AS po
+    JOIN Person AS p 
+    ON po.person_username = p.person_username
+    LEFT JOIN Liked AS l 
+    ON po.post_id = l.post_id
+    GROUP BY 
+    po.post_id,po.post_content,po.createdAt,p.person_username,p.person_fname,p.person_lname
+    ORDER BY 
+    po.createdAt DESC;`);
+    const likedPosts=await db.execute(`SELECT post_id FROM Liked WHERE person_username = ?`,[person_username]);
+
+    res.status(200).json({success:true,message:"Posts fetched successfully",data:{
+      person:person[0],
+      posts:posts[0],
+      likedPosts:likedPosts[0]
+    }});
+  } catch (error) {
+    throw new ApiError(500,"Error while fetching posts from DB");
+  }
+});
+const deletePost=asyncHandler(async (req,res)=>{
+  const {post_id}=req.params;
+  const person_username=req.person_username;
+  console.log("Authenticated Person for Deleting Post: ",person_username);
+  try {
+    const [post]=await db.execute(`SELECT * FROM Post WHERE post_id = ? AND person_username = ?`,[post_id,person_username]);
+    if(post.length===0){
+      throw new ApiError(404,"Post not found or you are not authorized to delete this post");
+    }
+    await db.execute(`DELETE FROM Post WHERE post_id = ? AND person_username = ?`,[post_id,person_username]);
+    res.status(200).json(new ApiResponse(true,"Post deleted successfully",null));
+  } catch (error) {
+    throw new ApiError(500,"Error while deleting post from DB");
+  }
+});
+const likePost=asyncHandler(async (req,res)=>{
+  const {post_id}=req.params;
+  const person_username=req.person_username;
+  console.log("Authenticated Person for Liking Post: ",person_username);
+  try {
+  const person=await db.execute(`SELECT * FROM Person WHERE person_username = ? and post_id = ?`,[person_username,post_id]);
+  if(!person){
+    const dislikePost=await db.execute(`DELETE FROM Liked WHERE post_id = ? AND person_username = ?`,[post_id,person_username]);
+    return res.status(200).json(new ApiResponse(true,"Post disliked successfully",null));
+  }
+  
+    const like=await db.execute(`INSERT INTO Liked (post_id, person_username) VALUES (?, ?)`,[post_id,person_username]); 
+    res.status(200).json(new ApiResponse(true,"Post liked successfully",null));
+  } catch (error) {
+    throw new ApiError(500,"Error while liking post in DB");
+  }
+});
+export { registerPerson, loginPerson, uploadPost,getPersonDetails, getAllPosts, deletePost, logoutPerson,likePost };
