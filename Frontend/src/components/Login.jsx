@@ -23,6 +23,8 @@ function Login() {
     );
     toast.success("Logged in successfully");
     console.log(response);
+    console.log(response.data.message.token);
+    localStorage.setItem("userToken", response.data.message.token);
     navigate("/home");
   }
   return (

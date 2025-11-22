@@ -19,12 +19,11 @@ function Home() {
       const response = await axios.get("http://localhost:9000/post/getAllPosts", {
         withCredentials: true,
       });
-      console.log("Fetched Posts Data: ", response.data);
+     
 
       setPosts(response.data.data.posts);
       setUser(response.data.data.person);
-      console.log("Posts Data: ", response.data.data.posts);
-      console.log("User Data: ", response.data.data.person);
+    
     } catch (err) {
       console.error("Error fetching posts:", err);
     }

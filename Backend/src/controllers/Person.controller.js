@@ -94,7 +94,7 @@ const loginPerson = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie("personToken", token, options)
-    .json(new ApiResponse(true, "Login successful", null));
+    .json(new ApiResponse(true, "Login successful", {token:token}));
 });
 const logoutPerson = asyncHandler(async (req, res) => {
   const options = {
