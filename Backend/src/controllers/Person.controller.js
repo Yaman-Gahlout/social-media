@@ -88,6 +88,8 @@ const loginPerson = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "lax",
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
   };
   return res
     .status(200)
