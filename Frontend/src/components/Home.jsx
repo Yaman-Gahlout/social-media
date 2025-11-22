@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 function Home() {
   const [currentTab, setCurrentTab] = useState("All Posts");
+  const [active, setActive] = useState(false);
 
   const navigate = useNavigate("");
   const posts = [
@@ -115,7 +116,10 @@ function Home() {
               className={`cursor-pointer ${
                 currentTab === "All Posts" && "text-blue-600"
               }`}
-              onClick={() => setCurrentTab("All Posts")}
+              onClick={() => {
+                setCurrentTab("All Posts");
+                setActive(false);
+              }}
             >
               All Posts
             </h1>
@@ -123,7 +127,10 @@ function Home() {
               className={`cursor-pointer ${
                 currentTab === "Your Posts" && "text-blue-600"
               }`}
-              onClick={() => setCurrentTab("Your Posts")}
+              onClick={() => {
+                setCurrentTab("Your Posts");
+                setActive(true);
+              }}
             >
               Your Posts
             </h1>
@@ -154,7 +161,7 @@ function Home() {
         <div className="w-[85%] mt-12 pb-[30px] flex flex-wrap gap-8 justify-center ">
           {posts.map((post) => {
             if (post.username === "@yamangahlout") {
-              return <Post post={post} />;
+              return <Post post={post} active={active} />;
             }
           })}
         </div>
