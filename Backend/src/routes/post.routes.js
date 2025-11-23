@@ -6,6 +6,7 @@ import {
   likePost,
   getPersonDetails,
   dislikePost,
+  getLikedPosts,
 } from "../controllers/Person.controller.js";
 import { verifyPerson } from "../middlewares/authenticate.middleware.js";
 
@@ -18,5 +19,6 @@ postRouter.route("/getCurrentUser").get(verifyPerson, getPersonDetails);
 postRouter.route("/deletePost/:post_id").delete(verifyPerson, deletePost);
 postRouter.route("/likePost/:post_id").post(verifyPerson, likePost);
 postRouter.route("/dislikePost/:post_id").post(verifyPerson, dislikePost);
+postRouter.route("/getLikedPosts").get(verifyPerson, getLikedPosts);
 
 export { postRouter };

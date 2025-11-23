@@ -281,6 +281,19 @@ const dislikePost = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error while disliking post in DB");
   }
 });
+const getLikedPosts = asyncHandler(async (req, res) => {
+  const person_username = req.person_username;
+  console.log("Authenticated Person for Fetching Liked Posts: ", person_username);
+  try {
+    const likedPosts = await db.execute(
+      `SELECT * FROM Liked `);
+    res
+      .status(200)
+      .json(new ApiResponse(true, "Liked posts fetched successfully", likedPosts[0]));
+    } catch (error) {
+    throw new ApiError(500, "Error while fetching liked posts from DB");
+  }
+});
 
 export {
   registerPerson,
@@ -292,4 +305,5 @@ export {
   logoutPerson,
   likePost,
   dislikePost,
+  getLikedPosts,
 };
