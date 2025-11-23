@@ -228,31 +228,35 @@ const deletePost = asyncHandler(async (req, res) => {
 const likePost = asyncHandler(async (req, res) => {
   const { post_id } = req.params;
   const person_username = req.person_username;
-  console.log("Authenticated Person for Liking Post: ", person_username);
+  if (!post_id) {
+    throw new ApiError(400, "Post ID is required");
+  }
+  console.log("Authenticated Person for Liking Post: ", person_username, post_id);
   try {
     const person = await db.execute(
-      `SELECT * FROM Person WHERE person_username = ? and post_id = ?`,
+      `SELECT * FROM Liked WHERE person_username = ? and post_id = ?`,
       [person_username, post_id]
     );
     console.log("Person Post Like Check: ", person);
-    if (!person) {
+    if (person[0].length !== 0) {
       const dislikePost = await db.execute(
         `DELETE FROM Liked WHERE post_id = ? AND person_username = ?`,
         [post_id, person_username]
       );
 
-      return res
+      res
         .status(200)
         .json(new ApiResponse(true, "Post disliked successfully", null));
     }
-    console.log("Post already liked, now disliked.");
-    const like = await db.execute(
+    else {
+      const like = await db.execute(
       `INSERT INTO Liked (post_id, person_username) VALUES (?, ?)`,
       [post_id, person_username]
     );
     res
       .status(200)
       .json(new ApiResponse(true, "Post liked successfully", null));
+  }
   } catch (error) {
     throw new ApiError(500, "Error while liking post in DB");
   }
