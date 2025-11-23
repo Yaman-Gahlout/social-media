@@ -35,6 +35,7 @@ function CreatePost() {
           <textarea
             name=""
             id=""
+            required
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
             placeholder="Write here your message..."
@@ -46,10 +47,16 @@ function CreatePost() {
               onClick={() => navigate("/home")}
               className="mt-5 text-xl p-[10px_20px] w-[200px] cursor-pointer text-gray-200 rounded-lg border border-gray-200"
             >
-              Go Back
+              Home
             </button>
             <button className="mt-5 text-xl p-[10px_20px] w-[200px] cursor-pointer text-gray-200 rounded-lg bg-blue-600">
-              Post
+              Upload Post
+            </button>
+            <button
+              onClick={() => navigate("/profile")}
+              className="mt-5 text-xl p-[10px_20px] w-[200px] cursor-pointer text-gray-200 rounded-lg border border-gray-200"
+            >
+              Profile
             </button>
           </div>
         </form>

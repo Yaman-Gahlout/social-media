@@ -25,16 +25,21 @@ function Signup() {
     };
     console.log(data);
 
-    const response = await axios.post(
-      "http://localhost:9000/person/register-person",
-      data,
-      { withCredentials: true }
-    );
-    toast.success("Registered successfully");
-    setTimeout(() => {
-      navigate("/login");
-    }, 1000);
-    console.log(response);
+    try {
+      const response = await axios.post(
+        "http://localhost:9000/person/register-person",
+        data,
+        { withCredentials: true }
+      );
+      toast.success("Registered successfully");
+      setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+      console.log(response);
+    } catch (err) {
+      console.error("Signup error:", err);
+      toast.error("Signup failed. Please try again.");
+    }
   }
   return (
     <div className="h-screen w-screen flex flex-col items-center bg-gray-950">

@@ -4,7 +4,6 @@ import { ApiError } from "../utils/ApiError.js";
 import { db } from "../db/index.js";
 import { hashPassword, comparePassword } from "../utils/hashPassword.js";
 import { createToken } from "../utils/jwtCreator.js";
-//import { dobToAgeFinder } from "../utils/dobToAge.js";
 
 const registerPerson = asyncHandler(async (req, res) => {
   const {
@@ -208,6 +207,8 @@ const deletePost = asyncHandler(async (req, res) => {
       `SELECT * FROM Post WHERE post_id = ? AND person_username = ?`,
       [post_id, person_username]
     );
+
+    console.log("Post to be deleted: ", post);
     if (post.length === 0) {
       throw new ApiError(
         404,
@@ -218,9 +219,10 @@ const deletePost = asyncHandler(async (req, res) => {
       `DELETE FROM Post WHERE post_id = ? AND person_username = ?`,
       [post_id, person_username]
     );
-    res
+    console.log("Post deleted successfully");
+    return res
       .status(200)
-      .json(new ApiResponse(true, "Post deleted successfully", null));
+      .json(new ApiResponse(true, "Post deleted successfully", post[0]));
   } catch (error) {
     throw new ApiError(500, "Error while deleting post from DB");
   }
@@ -281,16 +283,50 @@ const dislikePost = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error while disliking post in DB");
   }
 });
+// const getLikedPosts = asyncHandler(async (req, res) => {
+//   const person_username = req.person_username;
+//   console.log(
+//     "Authenticated Person for Fetching Liked Posts: ",
+//     person_username
+//   );
+//   try {
+//     const likedPosts = await db.execute(`SELECT * FROM Liked `);
+//     console.log("Liked Posts: ", likedPosts[0]);
+//     return res
+//       .status(200)
+//       .json(
+//         new ApiResponse(true, "Liked posts fetched successfully", likedPosts[0])
+//       );
+//   } catch (error) {
+//     throw new ApiError(500, "Error while fetching liked posts from DB");
+//   }
+// });
+
 const getLikedPosts = asyncHandler(async (req, res) => {
   const person_username = req.person_username;
-  console.log("Authenticated Person for Fetching Liked Posts: ", person_username);
+  console.log(
+    "Authenticated Person for Fetching Liked Posts: ",
+    person_username
+  );
+  console.log("Fetching liked posts for:", person_username);
+
   try {
-    const likedPosts = await db.execute(
-      `SELECT * FROM Liked `);
-    res
-      .status(200)
-      .json(new ApiResponse(true, "Liked posts fetched successfully", likedPosts[0]));
-    } catch (error) {
+    const [rows] = await db.execute(
+      `SELECT post_id FROM Liked WHERE person_username = ?`,
+      [person_username]
+    );
+
+    // Extract only post IDs into an array
+    const likedPostIds = rows.map((row) => row.post_id);
+
+    console.log("Liked Post IDs:", likedPostIds);
+
+    return res.status(200).json(
+      new ApiResponse(true, "Liked posts fetched successfully", {
+        likedPosts: likedPostIds,
+      })
+    );
+  } catch (error) {
     throw new ApiError(500, "Error while fetching liked posts from DB");
   }
 });

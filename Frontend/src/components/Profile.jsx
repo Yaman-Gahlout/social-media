@@ -1,6 +1,7 @@
 import React, { use, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 function Profile() {
   const navigate = useNavigate();
   const [userData, setUserData] = React.useState([]);
@@ -12,6 +13,7 @@ function Profile() {
         withCredentials: true,
       }
     );
+    toast.success("Logged out successfully");
     console.log("Logout Response: ", response.data);
     localStorage.removeItem("userToken");
     navigate("/login");
@@ -56,6 +58,12 @@ function Profile() {
         </div>
       </div>
       <div className="flex gap-5">
+        <button
+          onClick={() => navigate("/home")}
+          className="p-[10px_20px] cursor-pointer text-gray-200 rounded-lg bg-blue-600"
+        >
+          Home
+        </button>
         <button
           onClick={handleLogout}
           className="p-[10px_20px] cursor-pointer text-gray-200 rounded-lg bg-red-600"

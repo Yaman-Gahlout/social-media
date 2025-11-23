@@ -15,16 +15,21 @@ function Login() {
     };
     console.log(data);
 
-    const response = await axios.post(
-      "http://localhost:9000/person/login-person",
-      data,
-      { withCredentials: true }
-    );
-    toast.success("Logged in successfully");
-    console.log(response);
-    console.log(response.data.message.token);
-    localStorage.setItem("userToken", response.data.message.token);
-    navigate("/home");
+    try {
+      const response = await axios.post(
+        "http://localhost:9000/person/login-person",
+        data,
+        { withCredentials: true }
+      );
+      toast.success("Logged in successfully");
+      console.log(response);
+      console.log(response.data.message.token);
+      localStorage.setItem("userToken", response.data.message.token);
+      navigate("/home");
+    } catch (err) {
+      console.error("Login error:", err);
+      toast.error("Login failed. Please check your credentials.");
+    }
   }
   return (
     <div className="h-screen w-screen flex flex-col gap-[50px] items-center bg-gray-950">
@@ -49,6 +54,7 @@ function Login() {
             type="text"
             placeholder="Enter username"
             value={username}
+            required
             onChange={(e) => setUsername(e.target.value)}
             className="border border-gray-200 rounded-md w-full p-[10px_20px] bg-gray-200 text-black placeholder:text-black outline-none"
           />
@@ -56,6 +62,7 @@ function Login() {
             type="password"
             placeholder="Enter password"
             value={password}
+            required
             onChange={(e) => setPassword(e.target.value)}
             className="border border-gray-200 rounded-md w-full p-[10px_20px] bg-gray-200 text-black placeholder:text-black outline-none"
           />
