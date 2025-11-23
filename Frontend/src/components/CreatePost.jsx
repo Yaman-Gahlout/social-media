@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {toast} from "react-hot-toast";
+import { toast } from "react-hot-toast";
 function CreatePost() {
   const [postContent, setPostContent] = useState("");
   const navigate = useNavigate();
- const submitHandler = async (e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
     const data = {
       post_content: postContent,
@@ -20,7 +20,6 @@ function CreatePost() {
     console.log(response);
     toast.success("Post created successfully");
     navigate("/home");
-    
   };
   return (
     <div className="h-screen w-screen flex justify-center bg-gray-950">
@@ -42,9 +41,17 @@ function CreatePost() {
             className="border border-gray-200 w-full h-[300px] rounded-md p-[10px_20px] text-gray-200 text-xl"
           ></textarea>
 
-          <button className="mt-5 text-xl p-[10px_20px] w-[200px] cursor-pointer text-gray-200 rounded-lg bg-blue-600">
-            Post
-          </button>
+          <div className="flex gap-5">
+            <button
+              onClick={() => navigate("/home")}
+              className="mt-5 text-xl p-[10px_20px] w-[200px] cursor-pointer text-gray-200 rounded-lg border border-gray-200"
+            >
+              Go Back
+            </button>
+            <button className="mt-5 text-xl p-[10px_20px] w-[200px] cursor-pointer text-gray-200 rounded-lg bg-blue-600">
+              Post
+            </button>
+          </div>
         </form>
       </div>
     </div>

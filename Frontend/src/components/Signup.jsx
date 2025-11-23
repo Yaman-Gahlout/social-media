@@ -28,7 +28,7 @@ function Signup() {
     const response = await axios.post(
       "http://localhost:9000/person/register-person",
       data,
-      {withCredentials: true}
+      { withCredentials: true }
     );
     toast.success("Registered successfully");
     setTimeout(() => {
@@ -37,8 +37,19 @@ function Signup() {
     console.log(response);
   }
   return (
-    <div className="h-screen w-screen flex justify-center items-center bg-gray-950">
-      <div className="flex mt-20 mb-10 flex-col gap-5 w-[700px] shadow-2xl shadow-gray-900 border border-gray-200 rounded-2xl p-5 items-center">
+    <div className="h-screen w-screen flex flex-col items-center bg-gray-950">
+      <div className="w-[85%] flex mt-4 justify-between items-center">
+        <h1 className="text-3xl text-gray-300 cursor-pointer">openPost.</h1>{" "}
+        <div className="flex justify-between text-gray-200 gap-7 uppercase">
+          <button
+            onClick={() => navigate("/login")}
+            className="p-[10px_20px] cursor-pointer text-gray-200 rounded-lg bg-blue-600"
+          >
+            Login
+          </button>
+        </div>
+      </div>
+      <div className="flex mt-10 mb-10 flex-col gap-5 w-[700px] shadow-2xl shadow-gray-900 border border-gray-200 rounded-2xl p-5 items-center">
         <h1 className="text-5xl  text-gray-200">Signup</h1>
         <form
           className="flex flex-col w-[80%] gap-5 mt-8 items-center"

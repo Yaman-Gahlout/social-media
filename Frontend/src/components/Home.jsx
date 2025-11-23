@@ -12,26 +12,27 @@ function Home() {
 
   const [posts, setPosts] = useState([]);
   const [user, setUser] = useState([]);
+  const [likedPosts, setLikedPosts] = useState([]);
 
   React.useEffect(() => {
-  const fetchPosts = async () => {
-    try {
-      const response = await axios.get("http://localhost:9000/post/getAllPosts", {
-        withCredentials: true,
-      });
-     
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:9000/post/getAllPosts",
+          {
+            withCredentials: true,
+          }
+        );
+        setPosts(response.data.data.posts);
+        setUser(response.data.data.person);
+        setLikedPosts(response.data.data.likedPosts);
+      } catch (err) {
+        console.error("Error fetching posts:", err);
+      }
+    };
 
-      setPosts(response.data.data.posts);
-      setUser(response.data.data.person);
-    
-    } catch (err) {
-      console.error("Error fetching posts:", err);
-    }
-  };
-
-  fetchPosts();
-}, []);
-
+    fetchPosts();
+  }, []);
   return (
     <div className="h-screen flex flex-col items-center w-screen bg-gray-950">
       <div className="w-full flex justify-center p-5">
@@ -78,18 +79,60 @@ function Home() {
       </div>
       {currentTab == "All Posts" && (
         <div className="w-[85%] mt-12 pb-[30px] flex flex-wrap gap-8 justify-center items-center">
-          {posts.map((post) => (
-            <Post post={post} />
-          ))}
+          {posts.length === 0 ? (
+            <div className="flex flex-col mt-[200px] justify-center items-center gap-5">
+              <h1 className="text-3xl text-gray-200 text-center">
+                No post created
+              </h1>
+              <button
+                onClick={() => navigate("/create-post")}
+                className="p-[10px_20px] cursor-pointer text-gray-200 rounded-lg bg-blue-600"
+              >
+                Create Post
+              </button>
+            </div>
+          ) : (
+            posts.map((post) => (
+              <Post
+                post={post}
+                key={post.post_id}
+                setPosts={setPosts}
+                active={active}
+                likedPosts={likedPosts}
+                setLikedPosts={setLikedPosts}
+              />
+            ))
+          )}
         </div>
       )}
       {currentTab == "Your Posts" && (
-        <div className="w-[85%] mt-12 pb-[30px] flex flex-wrap gap-8 justify-center ">
-          {posts.map((post) => {
-            if (post.person_username === user[0].person_username) {
-              return <Post post={post} key={post.post_id} setPosts={setPosts} active={active} />;
-            }
-          })}
+        <div className="w-[85%] mt-12 pb-[30px] flex flex-wrap gap-8 justify-center items-center">
+          {posts.length === 0 ? (
+            <div className="flex flex-col mt-[200px] justify-center items-center gap-5">
+              <h1 className="text-3xl text-gray-200 text-center">
+                No post created
+              </h1>
+              <button
+                onClick={() => navigate("/create-post")}
+                className="p-[10px_20px] cursor-pointer text-gray-200 rounded-lg bg-blue-600"
+              >
+                Create Post
+              </button>
+            </div>
+          ) : (
+            posts.map((post) => {
+              if (post.person_username === user[0].person_username) {
+                return (
+                  <Post
+                    post={post}
+                    key={post.post_id}
+                    setPosts={setPosts}
+                    active={active}
+                  />
+                );
+              }
+            })
+          )}
         </div>
       )}
     </div>

@@ -14,9 +14,30 @@ function App() {
         <Route path="/" element={<Main />}></Route>
         <Route path="/login" element={<Login />}></Route>
         <Route path="/signup" element={<Signup />}></Route>
-        <Route path="/home" element={<Authenticate><Home /></Authenticate>}></Route>
-        <Route path="/create-post" element={<CreatePost />}></Route>
-        <Route path="/profile" element={<Profile />}></Route>
+        <Route
+          path="/home"
+          element={
+            <Authenticate>
+              <Home />
+            </Authenticate>
+          }
+        ></Route>
+        <Route
+          path="/create-post"
+          element={
+            <Authenticate>
+              <CreatePost />
+            </Authenticate>
+          }
+        ></Route>
+        <Route
+          path="/profile"
+          element={
+            <Authenticate>
+              <Profile />
+            </Authenticate>
+          }
+        ></Route>
       </Routes>
     </>
   );
