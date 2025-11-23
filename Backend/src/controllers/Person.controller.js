@@ -41,7 +41,7 @@ const registerPerson = asyncHandler(async (req, res) => {
     [person_username, person_email]
   );
   if (existedUser.length > 0) {
-    throw new ApiError(409, "User allready exists");
+    throw new ApiError(409, "User already exists");
   }
   const hashedPassword = await hashPassword(person_password);
   try {
@@ -94,7 +94,7 @@ const loginPerson = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .cookie("personToken", token, options)
-    .json(new ApiResponse(true, "Login successful", {token:token}));
+    .json(new ApiResponse(true, "Login successful", { token: token }));
 });
 const logoutPerson = asyncHandler(async (req, res) => {
   const options = {
@@ -234,16 +234,18 @@ const likePost = asyncHandler(async (req, res) => {
       `SELECT * FROM Person WHERE person_username = ? and post_id = ?`,
       [person_username, post_id]
     );
+    console.log("Person Post Like Check: ", person);
     if (!person) {
       const dislikePost = await db.execute(
         `DELETE FROM Liked WHERE post_id = ? AND person_username = ?`,
         [post_id, person_username]
       );
+
       return res
         .status(200)
         .json(new ApiResponse(true, "Post disliked successfully", null));
     }
-
+    console.log("Post already liked, now disliked.");
     const like = await db.execute(
       `INSERT INTO Liked (post_id, person_username) VALUES (?, ?)`,
       [post_id, person_username]
@@ -255,6 +257,24 @@ const likePost = asyncHandler(async (req, res) => {
     throw new ApiError(500, "Error while liking post in DB");
   }
 });
+
+const dislikePost = asyncHandler(async (req, res) => {
+  const { post_id } = req.params;
+  const person_username = req.person_username;
+  console.log("Authenticated Person for Disliking Post: ", person_username);
+  try {
+    const dislikePost = await db.execute(
+      `DELETE FROM Liked WHERE post_id = ? AND person_username = ?`,
+      [post_id, person_username]
+    );
+    res
+      .status(200)
+      .json(new ApiResponse(true, "Post disliked successfully", null));
+  } catch (error) {
+    throw new ApiError(500, "Error while disliking post in DB");
+  }
+});
+
 export {
   registerPerson,
   loginPerson,
@@ -264,4 +284,5 @@ export {
   deletePost,
   logoutPerson,
   likePost,
+  dislikePost,
 };

@@ -35,7 +35,3 @@
 // drop table Liked;
 
 // drop table Post;
-
-
-
-
