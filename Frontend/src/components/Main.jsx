@@ -23,7 +23,7 @@ function Main() {
           </div>
         </div>
         <div className="w-[65%] flex flex-col gap-6 mt-[200px] justify-between items-center">
-          <h2 className="text-6xl font-semibold text-gray-100">
+          <h2 className="text-5xl font-semibold text-gray-100">
             Share Your Thoughts With the World
           </h2>
           <h1 className="text-lg w-[80%] text-gray-100 opacity-80 text-center">
